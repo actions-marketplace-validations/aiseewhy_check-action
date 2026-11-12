@@ -1,0 +1,43 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "com.aiseewhy/aiseewhy",
+  "title": "AISeeWhy",
+  "description": "Can ChatGPT, Claude and Perplexity crawlers read your page? Audit, fixes, compare, monitoring.",
+  "version": "1.1.1",
+  "websiteUrl": "https://aiseewhy.com/docs/#mcp",
+  "repository": {
+    "url": "https://github.com/aiseewhy/check-action",
+    "source": "github",
+    "subfolder": "mcp"
+  },
+  "icons": [
+    {
+      "src": "https://aiseewhy.com/favicon.svg",
+      "mimeType": "image/svg+xml",
+      "sizes": [
+        "any"
+      ]
+    },
+    {
+      "src": "https://aiseewhy.com/icons/icon-512.png",
+      "mimeType": "image/png",
+      "sizes": [
+        "512x512"
+      ]
+    }
+  ],
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://api.aiseewhy.com/mcp",
+      "headers": [
+        {
+          "name": "x-api-key",
+          "description": "AISeeWhy API key (free account at https://aiseewhy.com/account/). Without it you get the free tier: the score and the first finding.",
+          "isRequired": false,
+          "isSecret": true
+        }
+      ]
+    }
+  ]
+}
