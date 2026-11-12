@@ -1,0 +1,43 @@
+name: AISeeWhy AI crawler check
+description: Fail a build when AI crawlers (ChatGPT, Claude, Gemini, Perplexity) are blocked or the AI-readability score drops.
+author: AISeeWhy
+branding: {icon: eye, color: purple}
+inputs:
+  url:
+    description: Page to check, e.g. your preview deployment URL
+    required: true
+  api-key:
+    description: AISeeWhy account API key (full report with fixes). Without it the check uses the free tier (score and counts).
+    required: false
+    default: ""
+  fail-on:
+    description: Fail when a finding of this priority or worse exists (P1, P2, P3 or none)
+    required: false
+    default: P1
+  min-score:
+    description: Fail when the score is below this (0-100)
+    required: false
+    default: "0"
+  language:
+    description: Report language (en, de, ja, ...)
+    required: false
+    default: en
+outputs:
+  score:
+    description: The 0-100 score
+    value: ${{ steps.check.outputs.score }}
+  p1:
+    description: Number of P1 findings
+    value: ${{ steps.check.outputs.p1 }}
+runs:
+  using: composite
+  steps:
+    - id: check
+      shell: bash
+      env:
+        ASW_URL: ${{ inputs.url }}
+        ASW_KEY: ${{ inputs.api-key }}
+        ASW_FAIL_ON: ${{ inputs.fail-on }}
+        ASW_MIN_SCORE: ${{ inputs.min-score }}
+        ASW_LANG: ${{ inputs.language }}
+      run: python3 "${{ github.action_path }}/check.py"
