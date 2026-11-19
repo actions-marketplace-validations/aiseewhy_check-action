@@ -11,17 +11,29 @@ inputs:
     required: false
     default: ""
   fail-on:
-    description: Fail when a finding of this priority or worse exists (P1, P2, P3 or none)
+    description: Fail when a finding of this priority or worse exists (P1, P2, P3 or none; case does not matter)
     required: false
     default: P1
+  fail-under:
+    description: Fail when the score is below this threshold (0-100). Empty falls back to min-score.
+    required: false
+    default: ""
   min-score:
-    description: Fail when the score is below this (0-100)
+    description: Older name of fail-under, kept for existing workflows (fail-under wins when both are set)
     required: false
     default: "0"
   language:
     description: Report language (en, de, ja, ...)
     required: false
     default: en
+  robots-path:
+    description: Path to the repository's robots.txt (e.g. public/robots.txt). Empty turns fix mode off.
+    required: false
+    default: ""
+  fix-search-bots:
+    description: '"true" edits robots-path in the workspace so AI search and user crawlers (OAI-SearchBot, ChatGPT-User, Claude-SearchBot, Claude-User, PerplexityBot, Perplexity-User) are allowed. Training crawlers and the * group are never changed. Nothing is committed or pushed.'
+    required: false
+    default: "false"
 outputs:
   score:
     description: The 0-100 score
@@ -29,9 +41,24 @@ outputs:
   p1:
     description: Number of P1 findings
     value: ${{ steps.check.outputs.p1 }}
+  failed:
+    description: '"true" when the policy (fail-on, fail-under) failed the build, otherwise "false"'
+    value: ${{ steps.check.outputs.failed }}
+  fixed:
+    description: '"true" when fix mode changed robots-path, otherwise "false"'
+    value: ${{ steps.fix.outputs.fixed }}
+  fix-summary:
+    description: Path to a Markdown file describing the robots.txt change (use as a pull request body)
+    value: ${{ steps.fix.outputs.fix-summary }}
 runs:
   using: composite
   steps:
+    - id: fix
+      shell: bash
+      env:
+        ASW_ROBOTS_PATH: ${{ inputs.robots-path }}
+        ASW_FIX_SEARCH_BOTS: ${{ inputs.fix-search-bots }}
+      run: python3 "${{ github.action_path }}/fixrobots.py"
     - id: check
       shell: bash
       env:
@@ -39,5 +66,6 @@ runs:
         ASW_KEY: ${{ inputs.api-key }}
         ASW_FAIL_ON: ${{ inputs.fail-on }}
         ASW_MIN_SCORE: ${{ inputs.min-score }}
+        ASW_FAIL_UNDER: ${{ inputs.fail-under }}
         ASW_LANG: ${{ inputs.language }}
       run: python3 "${{ github.action_path }}/check.py"
