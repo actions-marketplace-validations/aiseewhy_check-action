@@ -3,7 +3,7 @@
   "name": "com.aiseewhy/aiseewhy",
   "title": "AISeeWhy",
   "description": "Can ChatGPT, Claude and Perplexity crawlers read your page? Audit, fixes, compare, monitoring.",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "websiteUrl": "https://aiseewhy.com/docs/#mcp",
   "repository": {
     "url": "https://github.com/aiseewhy/check-action",
@@ -33,7 +33,7 @@
       "headers": [
         {
           "name": "x-api-key",
-          "description": "AISeeWhy API key (free account at https://aiseewhy.com/account/). Without it you get the free tier: the score and the first finding.",
+          "description": "AISeeWhy API key (account at https://aiseewhy.com/account/). Without a paid plan you get the free preview: the score, the crawler matrix and the costliest finding; a paid plan opens every finding and fix.",
           "isRequired": false,
           "isSecret": true
         }

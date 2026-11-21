@@ -51,7 +51,8 @@ def main() -> int:
     except PolicyError as e:
         print(f"::error::{e}")
         return 1
-    body = json.dumps({"url": url, "language": os.environ.get("ASW_LANG", "en"), "markdown": True}).encode()
+    body = json.dumps({"url": url, "language": os.environ.get("ASW_LANG", "en"), "markdown": True,
+                       "ref": "action"}).encode()  # ref: only for the service's checks-by-source count
     req = urllib.request.Request(f"{API}/v1/audit", data=body, method="POST",
                                  headers={"content-type": "application/json", "user-agent": "aiseewhy-action/1",
                                           **({"x-api-key": key} if key else {})})
